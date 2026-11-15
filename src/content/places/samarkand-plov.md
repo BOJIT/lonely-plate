@@ -1,10 +1,10 @@
 ---
-title: Colosseum
-location: Rome, Italy
-category: Ancient ruin
-lat: 41.8902
-lng: 12.4922
-summary: The largest amphitheatre of the Roman world, still dominating the centre of Rome nearly two thousand years on.
+title: Samarkand Plov
+location: Samarkand, Uzbekistan
+category: Main
+lat: 39.650504657848906
+lng: 66.96506439502335
+summary: The most famous of Plovs!
 ---
 
 ## Overview
