@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "shadcn-svelte/tailwind.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -78,5 +79,11 @@
 	}
 	body {
 		@apply bg-background text-foreground;
+	}
+	.maplibregl-popup-content {
+		@apply bg-transparent! shadow-none! p-0! rounded-none!;
+	}
+	.maplibregl-popup-tip {
+		@apply hidden!;
 	}
 }

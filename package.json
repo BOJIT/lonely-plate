@@ -35,6 +35,7 @@
 		"clsx": "^2.1.1",
 		"maplibre-gl": "^6.18.0",
 		"mode-watcher": "^1.1.0",
+		"shadcn-svelte": "^1.8.1",
 		"tailwind-merge": "^3.7.0",
 		"tailwind-variants": "^4.0.2"
 	}

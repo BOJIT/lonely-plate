@@ -4,13 +4,8 @@
 	import { page } from "$app/state";
 	import { resolve } from "$app/paths";
 	import type { Map as MapLibreMap } from "maplibre-gl";
-	import { toggleMode } from "mode-watcher";
 	import MapPin from "@lucide/svelte/icons/map-pin";
 	import ArrowRight from "@lucide/svelte/icons/arrow-right";
-	import ArrowUpRight from "@lucide/svelte/icons/arrow-up-right";
-	import ChevronDown from "@lucide/svelte/icons/chevron-down";
-	import Sun from "@lucide/svelte/icons/sun";
-	import Moon from "@lucide/svelte/icons/moon";
 	import {
 		Map,
 		MapControls,
@@ -19,11 +14,13 @@
 		MarkerPopup,
 		MarkerTooltip,
 	} from "#lib/components/ui/map/index.js";
-	import * as Card from "#lib/components/ui/card/index.js";
 	import { Button } from "#lib/components/ui/button/index.js";
 	import { Badge } from "#lib/components/ui/badge/index.js";
 	import { getPlaces, type Place } from "#lib/places.js";
 	import { fitView } from "#lib/map-view.js";
+
+    const styleUrl = "/map_style.json";
+    const styles = { light: styleUrl, dark: styleUrl };
 
 	const places = getPlaces();
 
@@ -69,17 +66,15 @@
 </script>
 
 <svelte:head>
-	<title>Atlas · A map of world landmarks</title>
+	<title>Lonely Plate - BP's Journal of World Cuisine</title>
 	<meta
 		name="description"
-		content="An interactive map of world landmarks. Each marker links to its own page."
+		content="Interactive map of recipes I've cooked!"
 	/>
 </svelte:head>
 
 <div class="relative h-dvh w-screen overflow-hidden">
-	<!-- renderWorldCopies lets the camera pan freely past the world's edge, so the initial framing can
-	     leave room for the floating card instead of being pinned to the world's bounds. -->
-	<Map {center} {zoom} bind:map options={{ renderWorldCopies: true }}>
+	<Map {center} {zoom} {styles} bind:map options={{ renderWorldCopies: true }}>
 		{#each places as place (place.slug)}
 			<MapMarker longitude={place.lng} latitude={place.lat}>
 				<MarkerContent>
@@ -115,64 +110,4 @@
 
 		<MapControls position="bottom-right" showZoom showCompass showFullscreen />
 	</Map>
-
-	<!-- Floating place index. pointer-events-none lets the map receive drags anywhere around the card. -->
-	<div class="pointer-events-none absolute top-0 left-0 z-10 w-full max-w-sm p-3 sm:p-4">
-		<Card.Root class="bg-card/90 pointer-events-auto gap-3 py-4 shadow-lg backdrop-blur">
-			<Card.Header class="px-4">
-				<div class="flex items-center justify-between gap-2">
-					<div class="space-y-1">
-						<Card.Title class="text-base">Atlas</Card.Title>
-						<Card.Description>
-							{places.length} landmarks · select a marker to explore
-						</Card.Description>
-					</div>
-					<div class="flex shrink-0 gap-1">
-						<Button variant="outline" size="icon-sm" onclick={toggleMode} aria-label="Toggle theme">
-							<Sun class="size-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-							<Moon
-								class="absolute size-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"
-							/>
-						</Button>
-						<Button
-							variant="outline"
-							size="icon-sm"
-							onclick={() => (listOpen = !listOpen)}
-							aria-label={listOpen ? "Hide place list" : "Show place list"}
-							aria-expanded={listOpen}
-						>
-							<ChevronDown class="size-4 transition-transform {listOpen ? 'rotate-180' : ''}" />
-						</Button>
-					</div>
-				</div>
-			</Card.Header>
-
-			{#if listOpen}
-				<Card.Content class="px-2">
-					<ul class="max-h-[50dvh] space-y-0.5 overflow-y-auto">
-						{#each places as place (place.slug)}
-							<li class="flex items-center gap-1">
-								<button
-									type="button"
-									onclick={() => flyTo(place)}
-									class="hover:bg-accent focus-visible:ring-ring/50 min-w-0 flex-1 rounded-md px-2 py-1.5 text-left outline-none focus-visible:ring-[3px]"
-								>
-									<span class="block truncate text-sm font-medium">{place.title}</span>
-									<span class="text-muted-foreground block truncate text-xs">{place.location}</span>
-								</button>
-								<Button
-									href={resolve("/places/[slug]", { slug: place.slug })}
-									variant="ghost"
-									size="icon-sm"
-									aria-label="Open {place.title}"
-								>
-									<ArrowUpRight />
-								</Button>
-							</li>
-						{/each}
-					</ul>
-				</Card.Content>
-			{/if}
-		</Card.Root>
-	</div>
 </div>
