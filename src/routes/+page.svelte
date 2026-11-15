@@ -18,7 +18,7 @@
     MarkerTooltip,
   } from "#lib/components/ui/map/index.js";
   import { Button } from "#lib/components/ui/button/index.js";
-  import { getPlaces } from "#lib/places.js";
+  import { getRecipes } from "#lib/recipes.js";
   import { fitView } from "#lib/map-view.js";
   import type { Component } from "svelte";
 
@@ -29,14 +29,14 @@
     Dessert: CandyIcon,
   };
 
-  const styleUrl = "/map_style.json";
+  const styleUrl = `${resolve("/")}map_style.json`;
   const styles = { light: styleUrl, dark: styleUrl };
 
-  const recipes = getPlaces();
+  const recipes = getRecipes();
 
   let map = $state<MapLibreMap | null>(null);
 
-  // `?place=slug` (used by the "View on map" link on each article) opens the map centred on that marker.
+  // `?recipe=slug` (used by the "View on map" link on each article) opens the map centred on that marker.
   // url.searchParams can't be read while pre-rendering, so this only runs in the browser.
   const focused = browser
     ? recipes.find((r) => r.slug === page.url.searchParams.get("recipe"))
@@ -81,15 +81,24 @@
 
         <MarkerTooltip>{recipe.title}</MarkerTooltip>
 
-        <MarkerPopup class="w-64 p-0" closeButton>
+        <MarkerPopup class="w-64 p-0 z-100 bg-ochre-light">
           <div class="space-y-3 p-4">
             <div class="space-y-1.5">
-              <h2 class="text-base leading-tight font-semibold">
+              <h2 class="text-base leading-tight font-semibold text-black">
                 {recipe.title}
               </h2>
-              <p class="text-muted-foreground text-xs">{recipe.location}</p>
+              <p class="text-gray-600 text-xs">{recipe.location}</p>
             </div>
-            <p class="text-sm leading-snug">{recipe.summary}</p>
+            <p class="text-black text-sm leading-snug">{recipe.summary}</p>
+            {#if recipe.image}
+              <div class="flex items-center justify-center">
+                <img
+                  src="{resolve('/')}img/{recipe.image}"
+                  alt={recipe.title}
+                  class="rounded-xl w-full md:w-2/3 p-2 object-center"
+                />
+              </div>
+            {/if}
             <Button
               href={resolve("/recipes/[slug]", { slug: recipe.slug })}
               size="sm"
@@ -105,7 +114,7 @@
   </Map>
 
   <div
-    class="pointer-events-none absolute top-0 left-0 right-0 z-10 w-full text-center"
+    class="pointer-events-none absolute top-0 left-0 right-0 w-full text-center"
   >
     <div class="bg-amber-100/50 p-1">
       <h1 class="text-black text-5xl p-3">Lonely Plate!</h1>

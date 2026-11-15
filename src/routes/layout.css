@@ -75,6 +75,11 @@
   --color-ring: var(--ring);
 }
 
+@theme {
+  --color-ochre-dark: #dcb576;
+  --color-ochre-light: #ecd5a0;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
